@@ -3,7 +3,15 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --primary: #4A6FA5;
+  --secondary: #6B8C42;
+  --accent: #FFA630;
+  --background: #F8F9FA;
+  --text: #333333;
+  --text-light: #6C757D;
+  --border: #E0E0E0;
 }
+
 
 @theme inline {
   --color-background: var(--background);
