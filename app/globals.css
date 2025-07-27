@@ -10,6 +10,9 @@
   --text: #333333;
   --text-light: #6C757D;
   --border: #E0E0E0;
+  --primary-hover: #3a5a8c; /* Une version plus sombre du primary */
+  --secondary-hover: #5a7a32;
+  --accent-hover: #e69528;
 }
 
 

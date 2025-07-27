@@ -15,7 +15,8 @@ import {
   FiLock,
   FiGlobe,
   FiUsers,
-  FiX
+  FiX,
+  FiLoader
 } from "react-icons/fi";
 import MDEditor from "@uiw/react-md-editor";
 import toast from "react-hot-toast";
@@ -25,7 +26,8 @@ import Link from "next/link";
 
 export default function NoteDetailPage() {
   const params = useParams();
-  const id = Array.isArray(params.id) ? parseInt(params.id[0]) : parseInt(params.id);
+  const idParam = Array.isArray(params.id) ? params.id[0] : params.id;
+  const id = idParam ? parseInt(idParam, 10) : undefined;
   const router = useRouter();
   const { token, user } = useAuth();
   const [note, setNote] = useState<Note | null>(null);
@@ -56,7 +58,7 @@ export default function NoteDetailPage() {
     if (!note) return;
     setIsDeleting(true);
     try {
-      await deleteNote(token, note.id);
+      await deleteNote( Number(note.id),token as string);
       toast.success("Note supprimée avec succès");
       router.push("/notes");
     } catch (err: any) {
@@ -77,9 +79,18 @@ export default function NoteDetailPage() {
   const getStatusIcon = () => {
     if (!note) return null;
     switch (note.status) {
-      case "public": return <FiGlobe className="mr-1" />;
-      case "partagé": return <FiUsers className="mr-1" />;
-      default: return <FiLock className="mr-1" />;
+      case "public": return <FiGlobe className="text-[var(--accent)]" />;
+      case "partagé": return <FiUsers className="text-[var(--secondary)]" />;
+      default: return <FiLock className="text-[var(--primary)]" />;
+    }
+  };
+
+  const getStatusColor = () => {
+    if (!note) return "";
+    switch (note.status) {
+      case "public": return "bg-[var(--accent)]/10 text-[var(--accent-dark)]";
+      case "partagé": return "bg-[var(--secondary)]/10 text-[var(--secondary-dark)]";
+      default: return "bg-[var(--primary)]/10 text-[var(--primary-dark)]";
     }
   };
 
@@ -95,13 +106,15 @@ export default function NoteDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="max-w-4xl mx-auto p-4 md:p-6 bg-[var(--background)]">
-        <div className="animate-pulse space-y-6">
-          <div className="h-8 bg-[var(--border)] rounded w-1/4 mb-6"></div>
-          <div className="h-6 bg-[var(--border)] rounded w-1/2 mb-2"></div>
-          <div className="h-4 bg-[var(--border)] rounded w-full mb-1"></div>
-          <div className="h-4 bg-[var(--border)] rounded w-3/4 mb-1"></div>
-          <div className="h-4 bg-[var(--border)] rounded w-2/3"></div>
+      <div className="max-w-4xl mx-auto p-4 md:p-6 min-h-screen bg-[var(--background)]">
+        <div className="flex flex-col gap-4 animate-pulse">
+          <div className="h-8 bg-[var(--border)] rounded w-32"></div>
+          <div className="h-10 bg-[var(--border)] rounded w-full max-w-xl"></div>
+          <div className="flex gap-2">
+            <div className="h-4 bg-[var(--border)] rounded w-24"></div>
+            <div className="h-4 bg-[var(--border)] rounded w-32"></div>
+          </div>
+          <div className="h-64 bg-[var(--border)] rounded mt-4"></div>
         </div>
       </div>
     );
@@ -109,32 +122,34 @@ export default function NoteDetailPage() {
 
   if (error) {
     return (
-      <div className="max-w-4xl mx-auto p-4 md:p-6 bg-[var(--background)]">
-        <div className="p-4 bg-red-50 text-red-600 rounded-lg flex items-center">
-          {error}
+      <div className="max-w-4xl mx-auto p-4 md:p-6 min-h-screen bg-[var(--background)] flex flex-col items-center justify-center text-center">
+        <div className="bg-red-50 border border-red-100 text-red-600 p-6 rounded-xl max-w-md w-full">
+          <h2 className="text-xl font-medium mb-2">Erreur</h2>
+          <p className="mb-4">{error}</p>
+          <Link
+            href="/notes"
+            className="inline-flex items-center text-[var(--primary)] hover:text-[var(--primary-dark)] hover:underline font-medium"
+          >
+            <FiArrowLeft className="mr-2" /> Retour à la liste
+          </Link>
         </div>
-        <Link
-          href="/notes"
-          className="mt-4 inline-flex items-center text-[var(--primary)] hover:underline"
-        >
-          <FiArrowLeft className="mr-1" /> Retour à la liste
-        </Link>
       </div>
     );
   }
 
   if (!note) {
     return (
-      <div className="max-w-4xl mx-auto p-4 md:p-6 text-center bg-[var(--background)]">
-        <h2 className="text-xl font-medium text-[var(--text-light)] mb-4">
-          Note introuvable
-        </h2>
-        <Link
-          href="/notes"
-          className="inline-flex items-center text-[var(--primary)] hover:underline"
-        >
-          <FiArrowLeft className="mr-1" /> Retour à la liste
-        </Link>
+      <div className="max-w-4xl mx-auto p-4 md:p-6 min-h-screen bg-[var(--background)] flex flex-col items-center justify-center text-center">
+        <div className="bg-[var(--border)] border border-[var(--border)] text-[var(--text-light)] p-6 rounded-xl max-w-md w-full">
+          <h2 className="text-xl font-medium mb-2">Note introuvable</h2>
+          <p className="mb-4">La note que vous recherchez n'existe pas ou vous n'y avez pas accès.</p>
+          <Link
+            href="/notes"
+            className="inline-flex items-center text-[var(--primary)] hover:text-[var(--primary-dark)] hover:underline font-medium"
+          >
+            <FiArrowLeft className="mr-2" /> Retour à la liste
+          </Link>
+        </div>
       </div>
     );
   }
@@ -142,7 +157,7 @@ export default function NoteDetailPage() {
   const isOwner = note.user?.id === user?.id;
 
   return (
-    <div className="max-w-4xl mx-auto p-4 md:p-6 h-full flex flex-col bg-[var(--background)]">
+    <div className="max-w-4xl mx-auto p-4 md:p-6 min-h-screen bg-[var(--background)]">
       <DeleteConfirmationModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
@@ -152,44 +167,45 @@ export default function NoteDetailPage() {
         message="Êtes-vous sûr de vouloir supprimer cette note ? Cette action est irréversible."
       />
 
-      <div className="flex justify-between items-start mb-6">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-6">
         <button
           onClick={() => router.back()}
-          className="flex items-center text-[var(--primary)] hover:text-[var(--primary-dark)]"
+          className="flex items-center text-[var(--primary)] hover:text-[var(--primary-dark)] hover:underline"
         >
           <FiArrowLeft className="mr-2" />
           Retour
         </button>
 
         {isOwner && !isEditing && (
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <button
               onClick={() => setIsEditing(true)}
-              className="flex items-center px-3 py-2 bg-[var(--primary)] text-white rounded-lg hover:bg-[var(--primary-dark)] transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-[var(--primary)] text-white rounded-lg hover:bg-[var(--primary-dark)] transition-colors shadow-sm"
             >
-              <FiEdit className="mr-2" />
-              Modifier
+              <FiEdit size={18} />
+              <span>Modifier</span>
             </button>
             <button
               onClick={() => setIsDeleteModalOpen(true)}
-              className="flex items-center px-3 py-2 bg-[var(--accent)] text-white rounded-lg hover:bg-[var(--accent-dark)] transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-[var(--accent)] text-white rounded-lg hover:bg-[var(--accent-dark)] transition-colors shadow-sm"
             >
-              <FiTrash2 className="mr-2" />
-              Supprimer
+              <FiTrash2 size={18} />
+              <span>Supprimer</span>
             </button>
           </div>
         )}
       </div>
 
       {isEditing ? (
-        <div className="bg-white rounded-xl shadow-sm border border-[var(--border)] p-6 flex-grow">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-[var(--primary)]">
+        <div className="bg-white rounded-xl shadow-sm border border-[var(--border)] p-6">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-semibold text-[var(--text)]">
               Modifier la note
             </h2>
             <button
               onClick={() => setIsEditing(false)}
-              className="p-2 text-[var(--text-light)] hover:text-[var(--text)] rounded-full hover:bg-[var(--border)]"
+              className="p-2 text-[var(--text-light)] hover:text-[var(--text)] rounded-full hover:bg-[var(--border)] transition-colors"
             >
               <FiX size={20} />
             </button>
@@ -202,43 +218,36 @@ export default function NoteDetailPage() {
           />
         </div>
       ) : (
-        <article className="bg-white rounded-xl shadow-sm border border-[var(--border)] p-6 flex-grow flex flex-col overflow-hidden">
-          <header className="mb-6">
-            <div className="flex items-center justify-between mb-2">
+        <article className="bg-white rounded-xl shadow-sm border border-[var(--border)] overflow-hidden">
+          {/* Note Header */}
+          <div className="p-6 border-b border-[var(--border)]">
+            <div className="flex justify-between items-start mb-4">
               <h1 className="text-2xl md:text-3xl font-bold text-[var(--text)]">
                 {note.title || "Sans titre"}
               </h1>
-              <span
-                className={`px-3 py-1 rounded-full text-xs font-medium flex items-center ${
-                  note.status === "public"
-                    ? "bg-[var(--secondary-light)] text-[var(--secondary-dark)]"
-                    : note.status === "partagé"
-                    ? "bg-[var(--accent-light)] text-[var(--accent-dark)]"
-                    : "bg-[var(--border)] text-[var(--text-light)]"
-                }`}
-              >
+              <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${getStatusColor()}`}>
                 {getStatusIcon()}
-                {note.status}
-              </span>
+                <span className="capitalize">{note.status}</span>
+              </div>
             </div>
 
-            <div className="flex flex-wrap gap-4 text-sm text-[var(--text-light)]">
-              <div className="flex items-center">
-                <FiUser className="mr-2" />
+            <div className="flex flex-wrap items-center gap-4 text-sm text-[var(--text-light)]">
+              <div className="flex items-center gap-2">
+                <FiUser className="text-[var(--text-light)]" />
                 <span>{note.user?.username || "Auteur inconnu"}</span>
               </div>
-              <div className="flex items-center">
-                <FiClock className="mr-2" />
+              <div className="flex items-center gap-2">
+                <FiClock className="text-[var(--text-light)]" />
                 <span>Mise à jour : {formatDate(note.updated_at)}</span>
               </div>
               {note.tags && (
-                <div className="flex items-center">
-                  <FiTag className="mr-2" />
+                <div className="flex items-center gap-2">
+                  <FiTag className="text-[var(--text-light)]" />
                   <div className="flex flex-wrap gap-1">
                     {note.tags.split(",").map((tag) => (
                       <span
                         key={tag}
-                        className="bg-[var(--border)] px-2 py-1 rounded-full text-xs"
+                        className="bg-[var(--border)] px-2.5 py-0.5 rounded-full text-xs"
                       >
                         {tag.trim()}
                       </span>
@@ -247,36 +256,24 @@ export default function NoteDetailPage() {
                 </div>
               )}
             </div>
-          </header>
+          </div>
 
-          <div className="prose max-w-none flex-grow overflow-y-auto">
+          {/* Note Content */}
+          <div className="p-6 prose max-w-none">
             <MDEditor.Markdown source={note.content} />
           </div>
 
-          {note.status === "partagé" &&
-            note.shared_with &&
-            note.shared_with.length > 0 && (
-              <footer className="mt-4 pt-4 border-t border-[var(--border)]">
-                <h3 className="text-sm font-medium text-[var(--text-light)] mb-2">
-                  Partagée avec :
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {note.shared_with.map((userId) => {
-                    const sharedUser = note.shared_users?.find(
-                      (u) => u.id === userId
-                    );
-                    return (
-                      <span
-                        key={userId}
-                        className="bg-[var(--border)] px-3 py-1 rounded-full text-sm"
-                      >
-                        {sharedUser?.username || `Utilisateur #${userId}`}
-                      </span>
-                    );
-                  })}
-                </div>
-              </footer>
-            )}
+          {/* Shared Users */}
+          {note.status === "partagé" && note.shared_with && note.shared_with.length > 0 && (
+            <div>
+              <h3>Partagée avec :</h3>
+              <ul>
+                {note.shared_with.map((user) => (
+                  <li key={user.id}>{user.username} ({user.email})</li>
+                ))}
+              </ul>
+            </div>
+          )}
         </article>
       )}
     </div>

@@ -1,14 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Note, User } from "@/lib/types";
+import { Note, User, NotePayload } from "@/lib/types";
 import { createNote, updateNote } from "@/lib/noteService";
 import { useAuth } from "@/context/AuthContext";
 import { FiSave, FiTag, FiType, FiEdit2, FiX, FiUsers, FiLock, FiGlobe } from "react-icons/fi";
 import toast from "react-hot-toast";
 import MDEditor from "@uiw/react-md-editor";
 import { getUsers } from "@/lib/auth";
-import { p } from "framer-motion/client";
 
 interface NoteFormProps {
   existingNote?: Note;
@@ -30,7 +29,11 @@ export default function NoteForm({
   const [error, setError] = useState("");
   const { token, user } = useAuth();
   const [users, setUsers] = useState<User[]>([]); 
-  const [sharedWith, setSharedWith] = useState<number[]>(existingNote?.shared_with || []); 
+  const [sharedWith, setSharedWith] = useState<number[]>(
+    existingNote?.shared_with
+      ? (existingNote.shared_with as any[]).map(u => typeof u === "number" ? u : u.id)
+      : []
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -63,26 +66,25 @@ export default function NoteForm({
     );
 
     try {
-      const noteData = {
+      const noteData: NotePayload = {
         title,
         content,
         tags,
         status,
-        user: user,
-        sharedWith: sharedWith.length > 0 ? sharedWith : undefined,
+        shared_with: status === "partagé" ? sharedWith : undefined,
         public_token: existingNote?.public_token || undefined,
       };
 
       let result;
       if (existingNote) {
-        result = await updateNote(token, existingNote.id, noteData);
+        result = await updateNote(token as string, existingNote.id, noteData);
         toast.success("Note mise à jour avec succès", {
           id: toastId,
           icon: '✅',
           duration: 4000
         });
       } else {
-        result = await createNote(token, noteData);
+        result = await createNote(token as string, noteData);
         toast.success("Note créée avec succès", {
           id: toastId,
           icon: '✨',
@@ -209,7 +211,7 @@ export default function NoteForm({
           <div className="border border-gray-200 rounded-lg overflow-hidden">
             <MDEditor
               value={content}
-              onChange={setContent}
+              onChange={value => setContent(value || "")}
               height={400}
               preview="edit"
               textareaProps={{
@@ -249,7 +251,7 @@ export default function NoteForm({
               {getStatusIcon()} Statut
             </label>
             <select
-              value={status}
+              value={String(status)}
               onChange={(e) => setStatus(e.target.value)}
               className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent appearance-none bg-white"
               disabled={isSubmitting}

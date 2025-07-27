@@ -19,7 +19,7 @@ export default function SharedNotesPage() {
       if (!token) return;
       setIsLoading(true);
       try {
-        const sharedNotes = await getSharedNotes(token,user.id);
+        const sharedNotes = await getSharedNotes(token);
         setNotes(sharedNotes);
       } catch (err: any) {
         setError(err.message);

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 // Définir les routes protégées
-const protectedRoutes = ['/sharedNotes', '/notes', '/home']
+const protectedRoutes = ['/sharedNotes', '/notes', '/home','/settings']
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl

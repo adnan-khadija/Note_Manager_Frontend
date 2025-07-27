@@ -1,6 +1,5 @@
-// services/notesService.ts
 import axios from "axios";
-import { Note } from "@/lib/types";
+import { Note, NotePayload } from "@/lib/types";
 
 const API_BASE_URL = "http://localhost:8000";
 
@@ -42,7 +41,7 @@ export async function getNoteById(token:string,noteId: number, userId: number): 
 
 export async function createNote(
   token: string,
-  note: Omit<Note, "id" | "created_at" | "updated_at" | "user_id">
+  note: NotePayload
 ): Promise<Note> {
   const response = await axios.post<Note>(`${API_BASE_URL}/notes`, note, {
     headers: {
@@ -50,13 +49,13 @@ export async function createNote(
       "Content-Type": "application/json",
     },
   });
-
   return response.data;
 }
+
 export async function updateNote(
   token: string,
   noteId: number,
-  note: Partial<Omit<Note, "id" | "created_at" | "updated_at" | "user_id">>
+  note: NotePayload
 ): Promise<Note> {
   const response = await axios.put<Note>(`${API_BASE_URL}/notes/${noteId}`, note, {
     headers: {
@@ -64,7 +63,6 @@ export async function updateNote(
       "Content-Type": "application/json",
     },
   });
-
   return response.data;
 }
 
@@ -76,13 +74,12 @@ export async function deleteNote(noteId: number ,token:string): Promise<void> {
   });
 }
 
-export async function getSharedNotes(token: string, userId: number): Promise<Note[]> {
+export async function getSharedNotes(token: string): Promise<Note[]> {
   try {
     const response = await axios.get<Note[]>(`${API_BASE_URL}/shared-notes`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      params: { user_id: userId },
     });
     return response.data;
   } catch (error: any) {

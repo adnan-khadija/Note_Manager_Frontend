@@ -3,8 +3,15 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { User, AuthContextType } from "@/lib/types";
 import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+interface JWTPayload {
+  exp: number;
+  id: number;
+  email: string;
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -16,18 +23,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         if (typeof window !== "undefined") {
           const storedToken = Cookies.get("token");
-          const storedUser = Cookies.get("user") ;
+          const storedUser = Cookies.get("user");
 
           if (storedToken && storedUser && storedUser !== "undefined") {
+            const decoded = jwtDecode<JWTPayload>(storedToken);
+            const expirationTime = decoded.exp * 1000;
+
+            if (expirationTime < Date.now()) {
+              logout();
+              return;
+            }
+
             setToken(storedToken);
             setUser(JSON.parse(storedUser));
+
+            const timeLeft = expirationTime - Date.now();
+            if (timeLeft > 0) {
+              setTimeout(() => {
+                logout();
+              }, timeLeft);
+            }
           }
         }
       } catch (error) {
         console.error("Error initializing auth:", error);
         Cookies.remove("token");
         Cookies.remove("user");
-        Cookies.remove("token");
       } finally {
         setIsLoading(false);
       }
@@ -48,6 +69,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setToken(null);
     Cookies.remove("token");
     Cookies.remove("user");
+    window.location.href = "/"; // Redirige vers login après expiration
   };
 
   const isAuthenticated = Boolean(token);
