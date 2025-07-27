@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Notes App
 
-## Getting Started
+Application web de prise de notes avec partage, authentification et interface moderne (Next.js + FastAPI + PostgreSQL).
 
-First, run the development server:
+---
+
+## 🚀 Lancer le projet
+
+### 1. **Test en local (sans Docker)**
+
+#### **Backend**
 
 ```bash
+cd backend
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+# Vérifie que le fichier .env contient :
+# DATABASE_URL=postgres://postgres:1234@localhost:5432/notesdb
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+
+#### **Backend**
+cd frontend
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+# Accède à http://localhost:3000
+Base de données
+Lance PostgreSQL localement (par exemple avec Docker Desktop ou un service local) :
+2. Test avec Docker (recommandé)
+Frontend : http://localhost:3000
+Backend (API docs) : http://localhost:8000/docs
+La base PostgreSQL est gérée automatiquement dans un conteneur.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+# Pour test local
+DATABASE_URL=postgres://postgres:1234@localhost:5432/notesdb
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+# Pour Docker
+DATABASE_URL=postgres://postgres:1234@db:5432/notesdb
+SERVER_HOST=0.0.0.0
+ACCESS_TOKEN_EXPIRE_MINUTES=40
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+📝 Fonctionnalités principales
+Authentification JWT
+Création, édition, suppression de notes
+Partage de notes avec d'autres utilisateurs
+Notes publiques via lien unique
+Recherche et filtres
 
-## Learn More
+📂 Structure du projet
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+backend/
+frontend/
+[docker-compose.yml](http://_vscodecontentref_/0)
+README.md
