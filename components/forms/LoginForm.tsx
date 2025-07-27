@@ -21,7 +21,7 @@ export default function LoginForm() {
       const { user, access_token } = await loginUser(email, password);
       login(user, access_token);
       toast.success("Connexion réussie !");
-      router.push("/notes");
+      router.push("/home");
     } catch (err: any) {
       toast.error(err.message || "Erreur lors de la connexion");
     } finally {
