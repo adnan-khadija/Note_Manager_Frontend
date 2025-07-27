@@ -36,10 +36,11 @@ _Aucuiel_
 _Liste des notes_
 <img width="1875" height="890" alt="image" src="https://github.com/user-attachments/assets/89ed0a87-a9e7-44ff-b618-cf41f3873017" />
 
-<img width="1875" height="890" alt="image" src="https://github.com/user-attachments/assets/8277b05f-a3b9-4dc1-8e3c-f6a19077fbaf" />
-
-
-
+<img width="1875" height="890" alt="image" src="https://github.com/user-attachments/assets/3e4dd939-46fd-4eac-9533-16d8228603c3" />
+_Recherche par tage et titre_
+<img width="1875" height="890" alt="image" src="https://github.com/user-attachments/assets/51263d7f-812d-4eca-b7e4-0edeab5afde5" />
+_Filtre par status_
+<img width="1875" height="890" alt="image" src="https://github.com/user-attachments/assets/604f3903-afeb-4d7d-92f2-4f0cb848e34a" />
 
 ## 🛠️ Technologies utilisées
 
