@@ -1,6 +1,10 @@
 # Notes App
 
 Application web de prise de notes avec partage, authentification et interface moderne (Next.js + FastAPI + PostgreSQL).
+Cette partie et Frentend:
+Vous pouvez consulter le code backend ici :  
+[Backend]([https://github.com/votre-utilisateur/votre-repo-backend](https://github.com/adnan-khadija/Note_Manager_Backend))
+
 
 ---
 
