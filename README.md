@@ -4,6 +4,30 @@ Application web de prise de notes avec partage, authentification et interface mo
 
 ---
 
+### 📝 Fonctionnalités principales
+_Authentification JWT_
+_Création, édition, suppression de notes_
+_Partage de notes avec d'autres utilisateurs_
+_Notes publiques via lien unique_
+_Recherche et filtres_
+
+## Structure du projet 
+ ```bash
+backend/
+  api/
+  db/
+  main.py
+  requirements.txt
+frontend/
+  app/
+  components/
+  context/
+  lib/
+  public/
+  next.config.js
+  package.json
+[docker-compose.yml](http://_vscodecontentref_/0)
+```
 ## 🚀 Lancer le projet
 
 ### 1. **Test en local (sans Docker)**
@@ -19,32 +43,24 @@ pip install -r requirements.txt
 # DATABASE_URL=postgres://postgres:1234@localhost:5432/notesdb
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
 
-#### **Backend**
+
 cd frontend
 npm install
 npm run dev
 # Accède à http://localhost:3000
-Base de données
-Lance PostgreSQL localement (par exemple avec Docker Desktop ou un service local) :
-2. Test avec Docker (recommandé)
-Frontend : http://localhost:3000
 Backend (API docs) : http://localhost:8000/docs
-La base PostgreSQL est gérée automatiquement dans un conteneur.
 
-# Pour test local
-DATABASE_URL=postgres://postgres:1234@localhost:5432/notesdb
+
 
 # Pour Docker
 DATABASE_URL=postgres://postgres:1234@db:5432/notesdb
 SERVER_HOST=0.0.0.0
 ACCESS_TOKEN_EXPIRE_MINUTES=40
 
-📝 Fonctionnalités principales
-Authentification JWT
-Création, édition, suppression de notes
-Partage de notes avec d'autres utilisateurs
-Notes publiques via lien unique
-Recherche et filtres
+
+
+
+
 
 📂 Structure du projet
 
