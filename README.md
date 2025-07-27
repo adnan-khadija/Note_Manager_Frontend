@@ -4,12 +4,42 @@ Application web de prise de notes avec partage, authentification et interface mo
 
 ---
 
-### 📝 Fonctionnalités principales
-_Authentification JWT_
-_Création, édition, suppression de notes_
-_Partage de notes avec d'autres utilisateurs_
-_Notes publiques via lien unique_
+## 📝 Fonctionnalités principales
+
+- **Authentification JWT**  
+  Gestion sécurisée des utilisateurs avec des tokens JSON Web Tokens pour l’accès aux ressources.
+
+- **Création, édition, suppression de notes**  
+  Interface complète pour gérer vos notes personnelles facilement.
+
+- **Partage de notes avec d'autres utilisateurs**  
+  Possibilité de partager des notes spécifiques avec d’autres comptes.
+
+- **Notes publiques via lien unique**  
+  Génération de liens publics permettant l’accès aux notes sans authentification.
+
+- **Recherche et filtres dynamiques**  
+  Outils puissants pour rechercher et filtrer rapidement vos notes selon différents critères.
+
+- **Interface responsive et moderne**  
+  Design adaptatif compatible desktop et mobile pour une expérience utilisateur optimale.
+unique_
 _Recherche et filtres_
+
+## 🎬 Démonstration
+_Connexion_
+<img width="1875" height="890" alt="image" src="https://github.com/user-attachments/assets/b4812d2b-53c6-49fe-a037-007ee05c623f" />
+_Inscription_
+<img width="1875" height="890" alt="image" src="https://github.com/user-attachments/assets/a8dca41a-d453-4966-9767-f2c008d4971a" />
+_Aucuiel_
+<img width="1875" height="890" alt="image" src="https://github.com/user-attachments/assets/680d4917-fb05-4c94-95a4-50e6c3343dd2" />
+_Liste des notes_
+<img width="1875" height="890" alt="image" src="https://github.com/user-attachments/assets/89ed0a87-a9e7-44ff-b618-cf41f3873017" />
+
+<img width="1875" height="890" alt="image" src="https://github.com/user-attachments/assets/8277b05f-a3b9-4dc1-8e3c-f6a19077fbaf" />
+
+
+
 
 ## 🛠️ Technologies utilisées
 
@@ -22,7 +52,7 @@ _Recherche et filtres_
   - [FastAPI](https://fastapi.tiangolo.com/) : Framework Python moderne pour créer des API REST rapides et performantes  
   - [Uvicorn](https://www.uvicorn.org/) : Serveur ASGI ultra-rapide pour exécuter FastAPI  
   - [Pydantic](https://pydantic.dev/) : Validation des données et gestion des modèles  
-  - [SQLAlchemy](https://www.sqlalchemy.org/) / [Tortoise ORM](https://tortoise.github.io/) (selon votre choix) : ORM pour la gestion des bases de données relationnelles
+  - [Tortoise ORM](https://tortoise.github.io/) (selon votre choix) : ORM pour la gestion des bases de données relationnelles
 
 - **Base de données**  
   - [PostgreSQL](https://www.postgresql.org/) : Base de données relationnelle puissante et open source
@@ -76,21 +106,11 @@ npm run dev
 # Accède à http://localhost:3000
 Backend (API docs) : http://localhost:8000/docs
 
-
-
 # Pour Docker
 DATABASE_URL=postgres://postgres:1234@db:5432/notesdb
 SERVER_HOST=0.0.0.0
 ACCESS_TOKEN_EXPIRE_MINUTES=40
 
+## Auteur
+[Khadija ADNAN](https://github.com/adnan-khadija)
 
-
-
-
-
-📂 Structure du projet
-
-backend/
-frontend/
-[docker-compose.yml](http://_vscodecontentref_/0)
-README.md
