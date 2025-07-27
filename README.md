@@ -91,7 +91,7 @@ frontend/
 ```
 ## 🚀 Lancer le projet
 
-### 1.** Test en local **
+### 1. Test en local 
 
 #### **Backend**
 
